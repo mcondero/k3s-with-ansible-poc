@@ -1,0 +1,12 @@
+---
+- hosts: all
+  become: true
+  tasks:
+    - name: Apt Update
+      apt:
+        update_cache: yes
+    - name: Nala Install
+      apt:
+        name: nala
+        state: present
+        update_cache: yes

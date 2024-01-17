@@ -1,0 +1,16 @@
+---
+- hosts: all
+  become: true
+  tasks:
+    - name: 🔎 Helm Verification
+      command: "helm version --short"
+      register: helm_check
+      ignore_errors: yes
+    - block:
+        - name: Helm Install
+          shell: "curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 && chmod 700 get_helm.sh && ./get_helm.sh"
+        - name: Helm Script Clean
+          file:
+            path: "{{ playbook_dir }}/get_helm.sh"
+            state: absent
+      when: helm_check.rc != 0

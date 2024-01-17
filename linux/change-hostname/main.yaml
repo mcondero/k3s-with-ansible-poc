@@ -1,0 +1,12 @@
+---
+- name: Change Hostname
+  become: true
+  tasks:
+    - name: Set Hostname
+      hostname:
+        name: k3s-lab
+
+    - name: Update /etc/hosts
+      lineinfile:
+        path: /etc/hosts
+        line: "127.0.0.1   localhost k3s-lab"

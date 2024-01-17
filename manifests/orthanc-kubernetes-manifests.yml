@@ -1,0 +1,83 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: orthanc
+  namespace: example
+  labels:
+    k8s-app: orthanc
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: local-path
+  resources:
+    requests:
+      storage: 5Gi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: orthanc
+  namespace: example
+  labels:
+    k8s-app: orthanc
+spec:
+  selector:
+    module: orthanc
+  type: NodePort
+  externalTrafficPolicy: Local
+  ports:
+    - name: http
+      port: 8042
+      targetPort: 8042
+      protocol: TCP
+    - name: https
+      port: 4242
+      targetPort: 4242
+      protocol: TCP
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: orthanc
+  namespace: example
+  labels:
+    k8s-app: orthanc
+spec:  
+  replicas: 1
+  selector:
+    matchLabels:
+      module: orthanc
+  template:
+    metadata:
+      labels:
+        module: orthanc
+    spec:
+      containers:
+      - name: orthanc
+        image: jodogne/orthanc
+        imagePullPolicy: IfNotPresent
+        volumeMounts:
+        - name: orthanc
+          mountPath: /var/lib/orthanc/db/
+        ports:
+        - name: http
+          containerPort: 8042
+        - name: https
+          containerPort: 4242
+      volumes:
+      - name: orthanc
+        persistentVolumeClaim:
+          claimName: orthanc
+---
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: testando-cluster-native-postgresql
+  namespace: cnpg-system
+spec:
+  instances: 1
+  primaryUpdateStrategy: unsupervised
+  storage:
+    size: 1Gi
+  monitoring:
+    enablePodMonitor: true

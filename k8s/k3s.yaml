@@ -1,0 +1,15 @@
+---
+- hosts: all
+  become: true
+  tasks:
+    - name: 🔎 K3S Verification
+      command: "k3s --version"
+      register: k3s_check
+      ignore_errors: true
+    - name: K3S Install
+      shell: curl -sfL https://get.k3s.io | INSTALL_K3S_EXEC="server" sh -s - --write-kubeconfig-mode=600 --disable-network-policy --flannel-backend=none
+      register: k3s_install
+      when: k3s_check.rc != 0
+    - name: Change Config Permissions
+      shell: sudo chown conde. /etc/rancher/k3s/k3s.yaml
+      when: k3s_check.rc != 0

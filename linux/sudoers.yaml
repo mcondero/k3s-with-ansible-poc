@@ -1,0 +1,13 @@
+-
+  hosts: all
+  gather_facts: no
+  become: yes
+  become_method: sudo
+  become_user: root
+  vars_prompt:
+    - name: sudo_password
+      prompt: "Enter your sudo password"
+      private: yes
+  roles:
+    - sudoers
+...

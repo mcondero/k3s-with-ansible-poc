@@ -1,0 +1,19 @@
+---
+- hosts: all
+  become: true
+  tasks:
+    - name: 📦 Add ArgoCD Helm Repo
+      community.kubernetes.helm_repository:
+        name: argo-cd
+        repo_url: https://argoproj.github.io/argo-helm
+        state: present
+
+    - name: 🚀 Install ArgoCD using Helm
+      community.kubernetes.helm:
+        kube_context: default
+        kubeconfig_path: /etc/rancher/k3s/k3s.yaml
+        name: argocd
+        chart_ref: argo-cd/argo-cd
+        release_namespace: argocd
+        create_namespace: yes
+        state: present

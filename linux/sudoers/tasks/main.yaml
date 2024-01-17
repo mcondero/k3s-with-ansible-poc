@@ -1,0 +1,11 @@
+---
+- name: Edit Sudoers
+  lineinfile:
+    path: /etc/sudoers
+    line: 'conde ALL=(ALL) NOPASSWD:ALL'
+    validate: 'visudo -cf %s'
+  become: true
+  become_method: sudo
+  become_user: root
+  vars:
+    ansible_become_password: "{{ sudo_password }}"
