@@ -2,7 +2,7 @@
 
 Este repositório trata de automatizar a implantação de um cluster K3S e suas aplicações de base em um servidor OnPremises.
 
-## PoC do Kubernetes para Gateway [#88](https://github.com/audo-labs/devops-docs/issues/88)
+## PoC do Kubernetes para Gateway
 
 ### Versão 1
 
